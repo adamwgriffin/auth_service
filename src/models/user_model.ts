@@ -29,13 +29,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true
     },
-    photo: {
+    image: {
       data: Buffer,
       contentType: String
     },
     resetPasswordLink: {
-      data: String,
-      default: ''
+      data: String
     }
   },
   {
