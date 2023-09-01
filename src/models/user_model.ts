@@ -1,10 +1,27 @@
-import mongoose from 'mongoose'
+import { Model, Schema, model } from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 import bcrypt from 'bcrypt'
 
+export interface IUser {
+  firstName: string
+  lastName: string
+  email: string
+  password: string
+  image: string
+  resetPasswordLink: string
+}
+
+// Put all user instance methods in this interface:
+export interface IUserMethods {
+  authenticate(string): Promise<boolean>
+}
+
+// Create a new Model type that knows about IUserMethods...
+export type UserModel = Model<IUser, Record<string, never>, IUserMethods>
+
 const SALT_WORK_FACTOR = 10
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
     firstName: {
       type: String,
@@ -44,9 +61,12 @@ const userSchema = new mongoose.Schema(
 
 /* validation in schema doesn't work since we're using pre "save" hook. invalidate() doesn't run in save hook so we need
 to use a "validate" hook for password validation instead */
-userSchema.pre('validate', async function(next) {
+userSchema.pre('validate', async function (next) {
   if (this.password && this.password.length < 6) {
-    this.invalidate('password', 'Error, expected `password` to be at least 6 characters.')
+    this.invalidate(
+      'password',
+      'Error, expected `password` to be at least 6 characters.'
+    )
   }
   if (this.isNew && !this.password) {
     this.invalidate('password', 'Path `password` is required.')
@@ -69,7 +89,6 @@ userSchema.pre('save', async function save(next) {
   }
 })
 
-
 userSchema.methods = {
   async authenticate(plainTextPassword) {
     return bcrypt.compare(plainTextPassword, this.password)
@@ -79,4 +98,4 @@ userSchema.methods = {
 // return Mongoose validation errors for uniqueness constraints instead of default MongoDB error codes
 userSchema.plugin(uniqueValidator)
 
-export default mongoose.model('User', userSchema)
+export default model('User', userSchema)
