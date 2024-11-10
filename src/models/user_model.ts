@@ -8,7 +8,6 @@ export interface IUser {
   email: string
   password: string
   image: string
-  resetPasswordLink: string
 }
 
 // Put all user instance methods in this interface:
@@ -47,11 +46,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       required: true
     },
     image: {
-      data: Buffer,
-      contentType: String
-    },
-    resetPasswordLink: {
-      data: String
+      type: String
     }
   },
   {
