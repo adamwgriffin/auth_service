@@ -4,7 +4,9 @@ A service for authenticating users.
 
 ## Setup
 
-Create a .env file for the app secrets. You can use the .env.example file in this directory as a template.
+Create a .env file for the app secrets. You can use the env.example file in this directory as a template.
+
+Add a username/password to DB_USER and DB_PASSWORD in the .env file.
 
 Generate the secret to use with JWT.
 ```
