@@ -1,4 +1,4 @@
-# User Service
+# Auth Service
 
 A service for authenticating users.
 
